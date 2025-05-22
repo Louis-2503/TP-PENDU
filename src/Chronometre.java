@@ -6,11 +6,10 @@ import javafx.util.Duration;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 
-
 /**
  * Permet de gérer un Text associé à une Timeline pour afficher un temps écoulé
  */
-public class Chronometre extends Text{
+public class Chronometre extends Text {
     /**
      * timeline qui va gérer le temps
      */
@@ -29,37 +28,38 @@ public class Chronometre extends Text{
      * avec un label initialisé à "0:0:0"
      * Ce constructeur créer la Timeline, la KeyFrame et le contrôleur
      */
-    public Chronometre(){
+    public Chronometre() {
         // A implémenter
     }
 
     /**
      * Permet au controleur de mettre à jour le text
      * la durée est affichée sous la forme m:s
+     * 
      * @param tempsMillisec la durée depuis à afficher
      */
-    public void setTime(long tempsMillisec){
+    public void setTime(long tempsMillisec) {
         // A implémenter
     }
 
     /**
      * Permet de démarrer le chronomètre
      */
-    public void start(){
+    public void start() {
         // A implémenter
     }
 
     /**
      * Permet d'arrêter le chronomètre
      */
-    public void stop(){
+    public void stop() {
         // A implémenter
     }
 
     /**
      * Permet de remettre le chronomètre à 0
      */
-    public void resetTime(){
+    public void resetTime() {
         // A implémenter
     }
 }
