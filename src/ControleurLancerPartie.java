@@ -31,7 +31,7 @@ public class ControleurLancerPartie implements EventHandler<ActionEvent> {
     @Override
     public void handle(ActionEvent actionEvent) {
         // A implémenter
-    
+        
         Optional<ButtonType> reponse = this.vuePendu.popUpPartieEnCours().showAndWait(); // on lance la fenêtre popup et on attends la réponse
         // si la réponse est oui
         if (reponse.isPresent() && reponse.get().equals(ButtonType.YES)){
@@ -40,5 +40,7 @@ public class ControleurLancerPartie implements EventHandler<ActionEvent> {
         else{
             System.out.println("D'ac !");
         }
+
+
     }
 }

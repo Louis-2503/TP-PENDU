@@ -10,9 +10,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
-import javafx.scene.control.Tooltip;
 import javafx.scene.control.TitledPane;
-import javafx.scene.layout.Region;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar.ButtonData;
@@ -75,7 +73,7 @@ public class Pendu extends Application {
     /**
      * le bouton Accueil / Maison
      */
-    private Button boutonMaison;
+    private Button boutonHome;
     /**
      * le bouton qui permet de (lancer ou relancer une partie
      */
@@ -112,34 +110,145 @@ public class Pendu extends Application {
         return banniere;
     }
 
-    // /**
-    // * @return le panel du chronomètre
-    // */
-    // private TitledPane leChrono(){
-    // A implementer
-    // TitledPane res = new TitledPane();
-    // return res;
-    // }
+    /**
+     * @return le panel du chronomètre
+     */
+    private TitledPane leChrono() {
+        // A implementer
+        TitledPane res = new TitledPane();
+        return res;
+    }
 
-    // /**
-    // * @return la fenêtre de jeu avec le mot crypté, l'image, la barre
-    // * de progression et le clavier
-    // */
-    // private Pane fenetreJeu(){
-    // A implementer
-    // Pane res = new Pane();
-    // return res;
-    // }
+    /**
+     * @return la fenêtre de jeu avec le mot crypté, l'image, la barre
+     *         de progression et le clavier
+     */
+    private Pane fenetreJeu() {
+        BorderPane layout = new BorderPane();
+        layout.setPadding(new Insets(20));
 
-    // /**
-    // * @return la fenêtre d'accueil sur laquelle on peut choisir les paramètres de
-    // jeu
-    // */
-    // private Pane fenetreAccueil(){
-    // A implementer
-    // Pane res = new Pane();
-    // return res;
-    // }
+        // === Titre du mot crypté ===
+        motCrypte = new Text("*** M A L I * E *");
+        motCrypte.setFont(Font.font("Arial", 30));
+        motCrypte.setFill(Color.BLACK);
+        motCrypte.setTextAlignment(TextAlignment.CENTER);
+
+        VBox motBox = new VBox(motCrypte);
+        motBox.setAlignment(Pos.CENTER);
+        motBox.setPadding(new Insets(10));
+        layout.setTop(motBox);
+
+        // === Centre (dessin + infos de droite) ===
+        HBox centre = new HBox(20);
+        centre.setAlignment(Pos.CENTER);
+
+        // --- Dessin pendu ---
+        dessin = new ImageView(); // image vide, car non fonctionnel
+        dessin.setFitWidth(250);
+        dessin.setFitHeight(300);
+        dessin.setStyle("-fx-border-color: purple; -fx-border-width: 3px;");
+
+        // --- Partie droite ---
+        VBox droite = new VBox(10);
+        droite.setAlignment(Pos.TOP_CENTER);
+
+        leNiveau = new Text("Niveau Difficile");
+        leNiveau.setFont(Font.font("Arial", 16));
+
+        VBox chronoBox = new VBox();
+        chronoBox.setAlignment(Pos.CENTER);
+        chronoBox.setPadding(new Insets(5));
+        chronoBox.setStyle("-fx-border-color: grey; -fx-border-width: 1px;");
+        Text labelChrono = new Text("Chronomètre");
+        Text valeurChrono = new Text("32 s");
+        chronoBox.getChildren().addAll(labelChrono, valeurChrono);
+
+        Button boutonNouveauMot = new Button("Nouveau mot");
+
+        droite.getChildren().addAll(leNiveau, chronoBox, boutonNouveauMot);
+
+        centre.getChildren().addAll(dessin, droite);
+        layout.setCenter(centre);
+
+        
+        pg = new ProgressBar(0.2);
+        VBox barreBox = new VBox(pg);
+        barreBox.setAlignment(Pos.CENTER);
+        barreBox.setPadding(new Insets(10));
+
+        // === Clavier ===
+        clavier = new Clavier("abcdefghijklmnopqrstuvwxyz", e -> {
+        }); // EventHandler vide
+        clavier.setHgap(10);
+        clavier.setVgap(10);
+        clavier.setAlignment(Pos.CENTER);
+        clavier.setPadding(new Insets(10));
+
+        VBox bas = new VBox(10, barreBox, clavier);
+        bas.setAlignment(Pos.CENTER);
+        layout.setBottom(bas);
+
+        return layout;
+    }
+
+    /**
+     * @return la fenêtre d'accueil sur laquelle on peut choisir les paramètres de
+     *         jeu
+     */
+
+    private Pane fenetreAccueil() {
+        VBox contenu = new VBox(20);
+        contenu.setPadding(new Insets(20));
+        contenu.setAlignment(Pos.TOP_CENTER);
+
+        // Titre
+        Text titre = new Text("Jeu du Pendu");
+        titre.setFont(Font.font("Arial", 28));
+
+        // Boutons du haut
+        HBox topButtons = new HBox(10);
+        topButtons.setAlignment(Pos.TOP_RIGHT);
+
+        boutonHome = new Button();
+        boutonHome.setGraphic(new ImageView(new Image("file:./img/home.png", 30, 30, true, true)));
+
+        boutonParametres = new Button();
+        boutonParametres.setGraphic(new ImageView(new Image("file:./img/parametres.png", 30, 30, true, true)));
+
+        Button boutonInfo = new Button();
+        boutonInfo.setGraphic(new ImageView(new Image("file:./img/info.png", 30, 30, true, true)));
+
+        topButtons.getChildren().addAll(boutonHome, boutonParametres, boutonInfo);
+
+        BorderPane topPane = new BorderPane();
+        topPane.setLeft(titre);
+        topPane.setRight(topButtons);
+        topPane.setPadding(new Insets(10));
+        topPane.setStyle("-fx-background-color: #eaeaff;");
+
+        // Bouton "Lancer une partie"
+        bJouer = new Button("Lancer une partie");
+        bJouer.setOnAction(e -> {
+            this.lancePartie();
+        });
+        bJouer.setOnAction(new ControleurLancerPartie(this.modelePendu, this));
+
+        // Choix de difficulté (non fonctionnel)
+        RadioButton facile = new RadioButton("Facile");
+        RadioButton moyen = new RadioButton("Médium");
+        RadioButton difficile = new RadioButton("Difficile");
+        RadioButton expert = new RadioButton("Expert");
+
+        VBox niveauxBox = new VBox(10, facile, moyen, difficile, expert);
+        niveauxBox.setPadding(new Insets(10));
+
+        TitledPane choixNiveau = new TitledPane("Niveau de difficulté", niveauxBox);
+        choixNiveau.setExpanded(true);
+
+        contenu.getChildren().addAll(bJouer, choixNiveau);
+
+        return new VBox(topPane, contenu);
+    }
 
     /**
      * charge les images à afficher en fonction des erreurs
@@ -155,11 +264,11 @@ public class Pendu extends Application {
     }
 
     public void modeAccueil() {
-        // A implementer
+        this.panelCentral.setCenter(this.fenetreAccueil());
     }
 
     public void modeJeu() {
-        // A implementer
+        this.panelCentral.setCenter(this.fenetreJeu());
     }
 
     public void modeParametres() {
@@ -220,6 +329,7 @@ public class Pendu extends Application {
      */
     @Override
     public void start(Stage stage) {
+        this.panelCentral = new BorderPane();
         stage.setTitle("IUTEAM'S - La plateforme de jeux de l'IUTO");
         stage.setScene(this.laScene());
         this.modeAccueil();

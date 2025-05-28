@@ -39,7 +39,10 @@ public class Chronometre extends Text {
      * @param tempsMillisec la durée depuis à afficher
      */
     public void setTime(long tempsMillisec) {
-        // A implémenter
+        long totalSeconds = tempsMillisec / 1000;
+        long minutes = totalSeconds / 60;
+        long seconds = totalSeconds % 60;
+        this.setText(minutes + ":" + seconds);
     }
 
     /**
