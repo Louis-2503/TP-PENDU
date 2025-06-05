@@ -27,10 +27,11 @@ public class Clavier extends TilePane{
      */
     public Clavier(String touches, EventHandler<ActionEvent> actionTouches) {
         // A implémenter
-        this.clavier = new ArrayList<>();
-        for (char lettre = 'a'; lettre <= 'z'; lettre++){
-            Button bouton = new Button(String.valueOf(lettre));
-            clavier.add(bouton);
+        for (int i=0;i<touches.length();i++) {
+            Button button = new Button(String.valueOf(touches.charAt(i)));
+            button.setOnAction(actionTouches);
+            this.clavier.add(button);
+            this.getChildren().add(button);
         }
     }
 

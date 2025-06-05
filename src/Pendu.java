@@ -78,6 +78,7 @@ public class Pendu extends Application {
      * le bouton qui permet de (lancer ou relancer une partie
      */
     private Button bJouer;
+    private Stage stage;
 
     /**
      * initialise les attributs (créer le modèle, charge les images, crée le chrono
@@ -124,71 +125,37 @@ public class Pendu extends Application {
      *         de progression et le clavier
      */
     private Pane fenetreJeu() {
-        BorderPane layout = new BorderPane();
-        layout.setPadding(new Insets(20));
+        this.dessin = new ImageView(this.lesImages.get(0));
+        this.dessin.setFitWidth(450);
+        this.dessin.setPreserveRatio(true);
 
-        // === Titre du mot crypté ===
-        motCrypte = new Text("*** M A L I * E *");
-        motCrypte.setFont(Font.font("Arial", 30));
-        motCrypte.setFill(Color.BLACK);
-        motCrypte.setTextAlignment(TextAlignment.CENTER);
+        BorderPane imageBox = new BorderPane(this.dessin);
+        imageBox.setPadding(new Insets(10));
 
-        VBox motBox = new VBox(motCrypte);
-        motBox.setAlignment(Pos.CENTER);
-        motBox.setPadding(new Insets(10));
-        layout.setTop(motBox);
+        Button nouveauMotBtn = new Button("Nouveau mot");
+        // nouveauMotBtn.setOnAction();
 
-        // === Centre (dessin + infos de droite) ===
-        HBox centre = new HBox(20);
-        centre.setAlignment(Pos.CENTER);
+        VBox panneauDroite = new VBox(20, leNiveau, leChrono(), nouveauMotBtn);
+        panneauDroite.setAlignment(Pos.TOP_CENTER);
+        panneauDroite.setPadding(new Insets(20));
 
-        // --- Dessin pendu ---
-        dessin = new ImageView(); // image vide, car non fonctionnel
-        dessin.setFitWidth(250);
-        dessin.setFitHeight(300);
-        dessin.setStyle("-fx-border-color: purple; -fx-border-width: 3px;");
+        this.pg = new ProgressBar(0);
 
-        // --- Partie droite ---
-        VBox droite = new VBox(10);
-        droite.setAlignment(Pos.TOP_CENTER);
+        this.clavier = new Clavier("ABCDEFGHIJKLMNOPQRSTUVWXYZ-", new ControleurLettres(modelePendu, this));
 
-        leNiveau = new Text("Niveau Difficile");
-        leNiveau.setFont(Font.font("Arial", 16));
+        VBox clavierBox = new VBox(10, this.pg, this.clavier);
+        clavierBox.setAlignment(Pos.CENTER);
 
-        VBox chronoBox = new VBox();
-        chronoBox.setAlignment(Pos.CENTER);
-        chronoBox.setPadding(new Insets(5));
-        chronoBox.setStyle("-fx-border-color: grey; -fx-border-width: 1px;");
-        Text labelChrono = new Text("Chronomètre");
-        Text valeurChrono = new Text("32 s");
-        chronoBox.getChildren().addAll(labelChrono, valeurChrono);
+        VBox centre = new VBox(15);
+        centre.getChildren().addAll(this.motCrypte, imageBox, clavierBox);
+        centre.setAlignment(Pos.TOP_CENTER);
+        centre.setPadding(new Insets(20));
 
-        Button boutonNouveauMot = new Button("Nouveau mot");
+        BorderPane res = new BorderPane();
+        res.setCenter(centre);
+        res.setRight(panneauDroite);
 
-        droite.getChildren().addAll(leNiveau, chronoBox, boutonNouveauMot);
-
-        centre.getChildren().addAll(dessin, droite);
-        layout.setCenter(centre);
-
-        
-        pg = new ProgressBar(0.2);
-        VBox barreBox = new VBox(pg);
-        barreBox.setAlignment(Pos.CENTER);
-        barreBox.setPadding(new Insets(10));
-
-        // === Clavier ===
-        clavier = new Clavier("abcdefghijklmnopqrstuvwxyz", e -> {
-        }); // EventHandler vide
-        clavier.setHgap(10);
-        clavier.setVgap(10);
-        clavier.setAlignment(Pos.CENTER);
-        clavier.setPadding(new Insets(10));
-
-        VBox bas = new VBox(10, barreBox, clavier);
-        bas.setAlignment(Pos.CENTER);
-        layout.setBottom(bas);
-
-        return layout;
+        return res;
     }
 
     /**
@@ -209,10 +176,10 @@ public class Pendu extends Application {
         HBox topButtons = new HBox(10);
         topButtons.setAlignment(Pos.TOP_RIGHT);
 
-        boutonHome = new Button();
+        Button boutonHome = new Button();
         boutonHome.setGraphic(new ImageView(new Image("file:./img/home.png", 30, 30, true, true)));
 
-        boutonParametres = new Button();
+        Button boutonParametres = new Button();
         boutonParametres.setGraphic(new ImageView(new Image("file:./img/parametres.png", 30, 30, true, true)));
 
         Button boutonInfo = new Button();
@@ -233,21 +200,39 @@ public class Pendu extends Application {
         });
         bJouer.setOnAction(new ControleurLancerPartie(this.modelePendu, this));
 
-        // Choix de difficulté (non fonctionnel)
-        RadioButton facile = new RadioButton("Facile");
-        RadioButton moyen = new RadioButton("Médium");
-        RadioButton difficile = new RadioButton("Difficile");
-        RadioButton expert = new RadioButton("Expert");
+        VBox vboxCenter = new VBox(5);
 
-        VBox niveauxBox = new VBox(10, facile, moyen, difficile, expert);
-        niveauxBox.setPadding(new Insets(10));
+        ToggleGroup toggleGroup = new ToggleGroup();
 
-        TitledPane choixNiveau = new TitledPane("Niveau de difficulté", niveauxBox);
+        RadioButton radioB1 = new RadioButton("facile");
+        RadioButton radioB2 = new RadioButton("moyen");
+        RadioButton radioB3 = new RadioButton("difficile");
+        RadioButton radioB4 = new RadioButton("expert");
+
+        radioB1.setToggleGroup(toggleGroup);
+        radioB2.setToggleGroup(toggleGroup);
+        radioB3.setToggleGroup(toggleGroup);
+        radioB4.setToggleGroup(toggleGroup);
+
+        // Connecte chaque RadioButton au contrôleur
+        radioB1.setOnAction(new ControleurNiveau(modelePendu, this));
+        radioB2.setOnAction(new ControleurNiveau(modelePendu, this));
+        radioB3.setOnAction(new ControleurNiveau(modelePendu, this));
+        radioB4.setOnAction(new ControleurNiveau(modelePendu, this));
+
+        vboxCenter.getChildren().addAll(radioB1, radioB2, radioB3, radioB4);
+        vboxCenter.setPadding(new Insets(10));
+
+        TitledPane choixNiveau = new TitledPane("Niveau de difficulté", vboxCenter);
         choixNiveau.setExpanded(true);
 
         contenu.getChildren().addAll(bJouer, choixNiveau);
 
         return new VBox(topPane, contenu);
+    }
+
+    public void setLeNiveau(String niveau) {
+        this.leNiveau = new Text(niveau);
     }
 
     /**
@@ -276,8 +261,13 @@ public class Pendu extends Application {
     }
 
     /** lance une partie */
+
     public void lancePartie() {
-        // A implementer
+
+        this.motCrypte = new Text(modelePendu.getMotCrypte());
+        this.motCrypte.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
+        this.chrono = new Chronometre();
+        this.modeJeu(); 
     }
 
     /**
