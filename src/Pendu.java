@@ -133,7 +133,7 @@ public class Pendu extends Application {
         imageBox.setPadding(new Insets(10));
 
         Button nouveauMotBtn = new Button("Nouveau mot");
-        // nouveauMotBtn.setOnAction();
+        nouveauMotBtn.setOnAction(e -> lancePartie());
 
         VBox panneauDroite = new VBox(20, leNiveau, leChrono(), nouveauMotBtn);
         panneauDroite.setAlignment(Pos.TOP_CENTER);
@@ -195,10 +195,10 @@ public class Pendu extends Application {
 
         // Bouton "Lancer une partie"
         bJouer = new Button("Lancer une partie");
+        bJouer.setOnAction(new ControleurLancerPartie(this.modelePendu, this));
         bJouer.setOnAction(e -> {
             this.lancePartie();
         });
-        bJouer.setOnAction(new ControleurLancerPartie(this.modelePendu, this));
 
         VBox vboxCenter = new VBox(5);
 
@@ -263,11 +263,12 @@ public class Pendu extends Application {
     /** lance une partie */
 
     public void lancePartie() {
-
+        this.modelePendu.setMotATrouver(); // tire un nouveau mot
+        this.majAffichage();
         this.motCrypte = new Text(modelePendu.getMotCrypte());
         this.motCrypte.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
         this.chrono = new Chronometre();
-        this.modeJeu(); 
+        this.modeJeu();
     }
 
     /**

@@ -47,9 +47,11 @@ public class ControleurNiveau implements EventHandler<ActionEvent> {
                 break;
         }
 
-        pendu.setLeNiveau("niveau " + niveauChoisi);
+        this.pendu.setLeNiveau(niveauChoisi);
 
-        System.out.println(niveauChoisi);
+        modelePendu.setMotATrouver(); // choisit un nouveau mot
+        this.pendu.majAffichage(); // met à jour la vue
+
 
 
 
