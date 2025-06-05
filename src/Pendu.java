@@ -125,7 +125,39 @@ public class Pendu extends Application {
      * @return la fenêtre de jeu avec le mot crypté, l'image, la barre
      *         de progression et le clavier
      */
+
     private Pane fenetreJeu() {
+        VBox contenu = new VBox(20);
+        contenu.setPadding(new Insets(20));
+        contenu.setAlignment(Pos.TOP_CENTER);
+
+        // ==== Haut de page (titre + boutons) ====
+        Text titre = new Text("Jeu du Pendu");
+        titre.setFont(Font.font("Arial", 28));
+
+        HBox topButtons = new HBox(10);
+        topButtons.setAlignment(Pos.TOP_RIGHT);
+
+        boutonHome = new Button();
+        boutonHome.setGraphic(new ImageView(new Image("file:./img/home.png", 30, 30, true, true)));
+        boutonHome.setOnAction(e -> modeAccueil());
+
+        boutonParametres = new Button();
+        boutonParametres.setGraphic(new ImageView(new Image("file:./img/parametres.png", 30, 30, true, true)));
+
+        Button boutonInfo = new Button();
+        boutonInfo.setGraphic(new ImageView(new Image("file:./img/info.png", 30, 30, true, true)));
+        boutonInfo.setOnAction(new ControleurInfos(this));
+
+        topButtons.getChildren().addAll(boutonHome, boutonParametres, boutonInfo);
+
+        BorderPane topPane = new BorderPane();
+        topPane.setLeft(titre);
+        topPane.setRight(topButtons);
+        topPane.setPadding(new Insets(10));
+        topPane.setStyle("-fx-background-color: #eaeaff;");
+
+        // ==== Partie centrale ====
         this.dessin = new ImageView(this.lesImages.get(0));
         this.dessin.setFitWidth(450);
         this.dessin.setPreserveRatio(true);
@@ -141,22 +173,23 @@ public class Pendu extends Application {
         panneauDroite.setPadding(new Insets(20));
 
         this.pg = new ProgressBar(0);
-
         this.clavier = new Clavier("ABCDEFGHIJKLMNOPQRSTUVWXYZ-", new ControleurLettres(modelePendu, this));
 
         VBox clavierBox = new VBox(10, this.pg, this.clavier);
         clavierBox.setAlignment(Pos.CENTER);
 
-        VBox centre = new VBox(15);
-        centre.getChildren().addAll(this.motCrypte, imageBox, clavierBox);
+        VBox centre = new VBox(15, this.motCrypte, imageBox, clavierBox);
         centre.setAlignment(Pos.TOP_CENTER);
         centre.setPadding(new Insets(20));
 
-        BorderPane res = new BorderPane();
-        res.setCenter(centre);
-        res.setRight(panneauDroite);
+        // ==== Zone de jeu avec tout sauf le haut ====
+        BorderPane zoneJeu = new BorderPane();
+        zoneJeu.setCenter(centre);
+        zoneJeu.setRight(panneauDroite);
 
-        return res;
+        // ==== Composition complète ====
+        return new VBox(topPane, zoneJeu);
+
     }
 
     /**
@@ -317,14 +350,20 @@ public class Pendu extends Application {
     }
 
     public Alert popUpMessageGagne() {
-        // A implementer
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Victoire !");
+        alert.setHeaderText(null);
+        alert.setContentText("Bravo, vous avez gagné !");
+        alert.showAndWait();
         return alert;
     }
 
     public Alert popUpMessagePerdu() {
-        // A implementer
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Défaite !");
+        alert.setHeaderText(null);
+        alert.setContentText("Dommage, vous avez perdu.\nLe mot était : " + modelePendu.getMotATrouve());
+        alert.showAndWait();
         return alert;
     }
 
