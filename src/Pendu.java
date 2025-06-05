@@ -16,6 +16,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import java.util.List;
+import java.util.Set;
 import java.util.Arrays;
 import java.io.File;
 import java.util.ArrayList;
@@ -275,7 +276,21 @@ public class Pendu extends Application {
      * raffraichit l'affichage selon les données du modèle
      */
     public void majAffichage() {
-        // A implementer
+        if (this.motCrypte != null) {
+            this.motCrypte.setText(modelePendu.getMotCrypte());
+        }
+
+        if (this.dessin != null) {
+            int nbErreurs = modelePendu.getNbErreursMax() - modelePendu.getNbErreursRestants();
+            if (nbErreurs >= 0 && nbErreurs < lesImages.size()) {
+                this.dessin.setImage(this.lesImages.get(nbErreurs));
+            }
+        }
+
+        if (this.pg != null) {
+            double progress = (double) modelePendu.getNbEssais() / modelePendu.getNbErreursMax();
+            this.pg.setProgress(progress);
+        }
     }
 
     /**
@@ -334,5 +349,9 @@ public class Pendu extends Application {
      */
     public static void main(String[] args) {
         launch(args);
+    }
+
+    public void desactiveTouches(Set<String> touchesDesactivees) {
+        this.clavier.desactiveTouches(touchesDesactivees);
     }
 }
