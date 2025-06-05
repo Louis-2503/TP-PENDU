@@ -131,22 +131,23 @@ public class Pendu extends Application {
         contenu.setPadding(new Insets(20));
         contenu.setAlignment(Pos.TOP_CENTER);
 
-        // ==== Haut de page (titre + boutons) ====
         Text titre = new Text("Jeu du Pendu");
         titre.setFont(Font.font("Arial", 28));
 
         HBox topButtons = new HBox(10);
         topButtons.setAlignment(Pos.TOP_RIGHT);
 
-        boutonHome = new Button();
+        Button boutonHome = new Button();
         boutonHome.setGraphic(new ImageView(new Image("file:./img/home.png", 30, 30, true, true)));
+        boutonHome.setOnAction(new RetourAccueil(this.modelePendu, this));
         boutonHome.setOnAction(e -> modeAccueil());
 
-        boutonParametres = new Button();
+        Button boutonParametres = new Button();
         boutonParametres.setGraphic(new ImageView(new Image("file:./img/parametres.png", 30, 30, true, true)));
 
         Button boutonInfo = new Button();
         boutonInfo.setGraphic(new ImageView(new Image("file:./img/info.png", 30, 30, true, true)));
+        boutonInfo.setOnAction(new ControleurInfos(this));
         boutonInfo.setOnAction(new ControleurInfos(this));
 
         topButtons.getChildren().addAll(boutonHome, boutonParametres, boutonInfo);
@@ -157,7 +158,6 @@ public class Pendu extends Application {
         topPane.setPadding(new Insets(10));
         topPane.setStyle("-fx-background-color: #eaeaff;");
 
-        // ==== Partie centrale ====
         this.dessin = new ImageView(this.lesImages.get(0));
         this.dessin.setFitWidth(450);
         this.dessin.setPreserveRatio(true);
@@ -182,12 +182,10 @@ public class Pendu extends Application {
         centre.setAlignment(Pos.TOP_CENTER);
         centre.setPadding(new Insets(20));
 
-        // ==== Zone de jeu avec tout sauf le haut ====
         BorderPane zoneJeu = new BorderPane();
         zoneJeu.setCenter(centre);
         zoneJeu.setRight(panneauDroite);
 
-        // ==== Composition complète ====
         return new VBox(topPane, zoneJeu);
 
     }
@@ -212,12 +210,14 @@ public class Pendu extends Application {
 
         Button boutonHome = new Button();
         boutonHome.setGraphic(new ImageView(new Image("file:./img/home.png", 30, 30, true, true)));
+        boutonHome.setOnAction(new RetourAccueil(this.modelePendu, this));
 
         Button boutonParametres = new Button();
         boutonParametres.setGraphic(new ImageView(new Image("file:./img/parametres.png", 30, 30, true, true)));
 
         Button boutonInfo = new Button();
         boutonInfo.setGraphic(new ImageView(new Image("file:./img/info.png", 30, 30, true, true)));
+        boutonInfo.setOnAction(new ControleurInfos(this));
 
         topButtons.getChildren().addAll(boutonHome, boutonParametres, boutonInfo);
 
@@ -344,8 +344,11 @@ public class Pendu extends Application {
     }
 
     public Alert popUpReglesDuJeu() {
-        // A implementer
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Règles du jeu");
+        alert.setHeaderText(null);
+        alert.setContentText("Durant une partie de pendu, vous devez trouver le mot mystère en faisant le moins d'erreurs possible !");
+        alert.showAndWait();
         return alert;
     }
 
