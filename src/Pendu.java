@@ -118,6 +118,14 @@ public class Pendu extends Application {
     private TitledPane leChrono() {
         // A implementer
         TitledPane res = new TitledPane();
+
+        res.setText("Chronomètre");
+        if (this.chrono != null) {
+            res.setContent(this.chrono);
+        } else {
+            res.setContent(new Text("0:0"));
+        }
+
         return res;
     }
 
@@ -238,10 +246,10 @@ public class Pendu extends Application {
 
         ToggleGroup toggleGroup = new ToggleGroup();
 
-        RadioButton radioB1 = new RadioButton("facile");
-        RadioButton radioB2 = new RadioButton("moyen");
-        RadioButton radioB3 = new RadioButton("difficile");
-        RadioButton radioB4 = new RadioButton("expert");
+        RadioButton radioB1 = new RadioButton("Facile");
+        RadioButton radioB2 = new RadioButton("Moyen");
+        RadioButton radioB3 = new RadioButton("Difficile");
+        RadioButton radioB4 = new RadioButton("Expert");
 
         radioB1.setToggleGroup(toggleGroup);
         radioB2.setToggleGroup(toggleGroup);
@@ -302,6 +310,8 @@ public class Pendu extends Application {
         this.motCrypte = new Text(modelePendu.getMotCrypte());
         this.motCrypte.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
         this.chrono = new Chronometre();
+        this.chrono.resetTime();
+        this.chrono.start();
         this.modeJeu();
     }
 
@@ -321,8 +331,11 @@ public class Pendu extends Application {
         }
 
         if (this.pg != null) {
-            double progress = (double) modelePendu.getNbEssais() / modelePendu.getNbErreursMax();
+            int total = modelePendu.getMotATrouve().length();
+            int restantes = modelePendu.getNbLettresRestantes();
+            double progress = (double) (total - restantes) / total;
             this.pg.setProgress(progress);
+
         }
     }
 
@@ -333,7 +346,7 @@ public class Pendu extends Application {
      */
     public Chronometre getChrono() {
         // A implémenter
-        return null; // A enlever
+        return this.chrono;
     }
 
     public Alert popUpPartieEnCours() {
@@ -347,7 +360,8 @@ public class Pendu extends Application {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Règles du jeu");
         alert.setHeaderText(null);
-        alert.setContentText("Durant une partie de pendu, vous devez trouver le mot mystère en faisant le moins d'erreurs possible !");
+        alert.setContentText(
+                "Durant une partie de pendu, vous devez trouver le mot mystère en faisant le moins d'erreurs possible !");
         alert.showAndWait();
         return alert;
     }
