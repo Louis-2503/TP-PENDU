@@ -235,8 +235,7 @@ public class Pendu extends Application {
         topPane.setPadding(new Insets(10));
         topPane.setStyle("-fx-background-color: #eaeaff;");
 
-        // Bouton "Lancer une partie"
-        bJouer = new Button("Lancer une partie");
+        Button bJouer = new Button("Lancer une partie");
         bJouer.setOnAction(new ControleurLancerPartie(this.modelePendu, this));
         bJouer.setOnAction(e -> {
             this.lancePartie();

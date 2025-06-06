@@ -16,7 +16,6 @@ public class ControleurLettres implements EventHandler<ActionEvent> {
      * vue du jeu
      */
     private Pendu vuePendu;
-    
 
     /**
      * @param modelePendu modèle du jeu
@@ -39,25 +38,17 @@ public class ControleurLettres implements EventHandler<ActionEvent> {
     public void handle(ActionEvent actionEvent) {
         Button boutonLettre = (Button) actionEvent.getSource();
         String lettreTexte = boutonLettre.getText();
-
         if (lettreTexte.length() == 1) {
             char lettre = lettreTexte.charAt(0);
-
-            // Essaye la lettre dans le modèle
             modelePendu.essaiLettre(lettre);
-
-            // Met à jour l'affichage
             vuePendu.majAffichage();
-
-            // Désactive le bouton pour éviter un double clic
             vuePendu.desactiveTouches(this.modelePendu.getLettresEssayees());
-
-            // MotMystere.essaiLettre();
             vuePendu.majAffichage();
             if (modelePendu.gagne()) {
+                vuePendu.getChrono().stop();
                 vuePendu.popUpMessageGagne();
-            }
-            if (modelePendu.perdu()) {
+            } else if (modelePendu.perdu()) {
+                vuePendu.getChrono().stop();
                 vuePendu.popUpMessagePerdu();
             }
         }
